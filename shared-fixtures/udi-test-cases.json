@@ -1,0 +1,241 @@
+{
+  "$comment": "Shared cross-language fixtures for the IFA UDI parsers. Values are arithmetically verified against documentation/IFA_UDI_Parser_Analysis.md. checkDigitFixtures test the raw mod97/mod11 routines directly; barcodeFixtures exercise the full check()/parseUdi() pipeline.",
+  "checkDigitFixtures": {
+    "mod97": [
+      {
+        "input": "1103752864",
+        "expected": "14",
+        "note": "PRA 11 + PZN 03752864 -> PPN 110375286414"
+      },
+      {
+        "input": "1112345678",
+        "expected": "42",
+        "note": "PRA 11 + PZN 12345678 -> PPN 111234567842"
+      },
+      {
+        "input": "PP12345ABCD.12345678.90",
+        "expected": "04",
+        "note": "Basic UDI-DI example from Check Digit Calculations doc"
+      },
+      {
+        "input": "MA12345MAX19",
+        "expected": "00",
+        "note": "Master UDI-DI PRA MA + CIN 12345 + device group MAX19"
+      },
+      {
+        "input": "1312345MED7770",
+        "expected": "94",
+        "note": "HPC PRA 13 + CIN 12345 + item MED777 + PLI 0"
+      },
+      {
+        "input": "1312345MED7772",
+        "expected": "27",
+        "note": "same HPC item, PLI 2 (pack of 3)"
+      },
+      {
+        "input": "1312345MED7779",
+        "expected": "35",
+        "note": "same HPC item, PLI 9 (reserved/invalid for UDI, checksum still computable)"
+      }
+    ],
+    "mod11Pzn": [
+      {
+        "input": "2758089",
+        "expected": "9",
+        "note": "PZN base -> full PZN 27580899"
+      }
+    ]
+  },
+  "barcodeFixtures": [
+    {
+      "name": "valid_ppn_di_only",
+      "input": "(9N)111234567842",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "111234567842",
+          "scheme": "PPN",
+          "praCode": "11",
+          "pzn": "12345678",
+          "checkDigits": "42"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "valid_hpc_unit_of_use",
+      "input": "(9N)1312345MED777094",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "1312345MED777094",
+          "scheme": "HPC",
+          "praCode": "13",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 0,
+          "checkDigits": "94"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "valid_hpc_pack_of_3",
+      "input": "(9N)1312345MED777227",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "1312345MED777227",
+          "scheme": "HPC",
+          "praCode": "13",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 2,
+          "checkDigits": "27"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "valid_master_udi_di",
+      "input": "(9N)MA12345MAX1900",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "MA12345MAX1900",
+          "scheme": "MASTER_UDI_DI",
+          "praCode": "MA",
+          "cin": "12345",
+          "deviceGroupCode": "MAX19",
+          "checkDigits": "00"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "valid_full_interpretation_line",
+      "input": "(9N)111234567842(1T)1A234B5(D)151231(S)1234567890123456",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "111234567842",
+          "scheme": "PPN",
+          "praCode": "11",
+          "pzn": "12345678",
+          "checkDigits": "42"
+        },
+        "udiPi": {
+          "lot": "1A234B5",
+          "expiryDate": "2015-12-31",
+          "serialNumber": "1234567890123456"
+        }
+      }
+    },
+    {
+      "name": "valid_non_canonical_field_order",
+      "input": "(9N)111234567842(S)JXCC263D0889(1T)170400XYZ(D)230617",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "note": "Field order (SN, LOT, EXP) deliberately non-canonical -- parser must key off DI tags, not position",
+      "expected": {
+        "udiDi": {
+          "raw": "111234567842",
+          "scheme": "PPN",
+          "praCode": "11",
+          "pzn": "12345678",
+          "checkDigits": "42"
+        },
+        "udiPi": {
+          "serialNumber": "JXCC263D0889",
+          "lot": "170400XYZ",
+          "expiryDate": "2023-06-17"
+        }
+      }
+    },
+    {
+      "name": "valid_raw_iso15434_envelope",
+      "input": "[)>\u001e06\u001d9N111234567842\u001d1TABC12345\u001dD241231\u001e\u0004",
+      "inputForm": "rawIso15434",
+      "note": "Contains literal control chars: 0x1E=RS, 0x1D=GS, 0x04=EOT per ISO/IEC 15434 Format 06",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "111234567842",
+          "scheme": "PPN",
+          "praCode": "11",
+          "pzn": "12345678",
+          "checkDigits": "42"
+        },
+        "udiPi": {
+          "lot": "ABC12345",
+          "expiryDate": "2024-12-31"
+        }
+      }
+    },
+    {
+      "name": "valid_din16598_hpc",
+      "input": ".9N1312345MED777094^1TABC12345^D241231",
+      "inputForm": "din16598",
+      "expectedValid": true,
+      "expected": {
+        "udiDi": {
+          "raw": "1312345MED777094",
+          "scheme": "HPC",
+          "praCode": "13",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 0,
+          "checkDigits": "94"
+        },
+        "udiPi": {
+          "lot": "ABC12345",
+          "expiryDate": "2024-12-31"
+        }
+      }
+    },
+    {
+      "name": "invalid_corrupted_check_digit",
+      "input": "(9N)111234567843",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "check_digit_mismatch",
+      "note": "Same as valid_ppn_di_only with the last digit changed from 42 to 43"
+    },
+    {
+      "name": "invalid_packaging_level_index_9",
+      "input": "(9N)1312345MED777935",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "packaging_level_index_reserved",
+      "note": "Checksum is arithmetically correct (35) but PLI=9 is reserved for variable quantities and invalid for UDI"
+    },
+    {
+      "name": "invalid_code39_pzn_out_of_scope",
+      "input": "*-12345678*",
+      "inputForm": "unrecognized",
+      "expectedValid": false,
+      "reason": "not_a_udi_barcode",
+      "note": "Legacy Code 39 PZN-only barcode -- out of scope per plan, cannot carry UDI-PI"
+    },
+    {
+      "name": "invalid_malformed_short_hpc",
+      "input": "(9N)131234",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "malformed_length"
+    },
+    {
+      "name": "invalid_unsupported_pra_code",
+      "input": "(9N)121234567899",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "unsupported_pra_code",
+      "note": "PRA-Code 12 (EUROCODE IBLS Blood Product Number) is a recognized IFA PRA-Code but not one of the three implemented schemes (11/13/MA)"
+    }
+  ]
+}

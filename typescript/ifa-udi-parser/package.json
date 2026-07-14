@@ -1,0 +1,20 @@
+{
+  "name": "ifa-udi-parser",
+  "version": "0.1.0",
+  "description": "Parser and validator for IFA UDI barcodes (medical device UDI-DI / UDI-PI, PPN/HPC/Master UDI-DI schemes)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

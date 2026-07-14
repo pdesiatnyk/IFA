@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfaUdi.Parser", "IfaUdi.Parser\IfaUdi.Parser.csproj", "{5138B254-C833-47F2-8388-853359DBFDDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IfaUdi.Parser.Tests", "IfaUdi.Parser.Tests\IfaUdi.Parser.Tests.csproj", "{80A0840C-D3B9-46B3-8437-F8086EDB3963}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5138B254-C833-47F2-8388-853359DBFDDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5138B254-C833-47F2-8388-853359DBFDDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5138B254-C833-47F2-8388-853359DBFDDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5138B254-C833-47F2-8388-853359DBFDDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A0840C-D3B9-46B3-8437-F8086EDB3963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A0840C-D3B9-46B3-8437-F8086EDB3963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A0840C-D3B9-46B3-8437-F8086EDB3963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A0840C-D3B9-46B3-8437-F8086EDB3963}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
