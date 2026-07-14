@@ -1,8 +1,11 @@
-namespace IfaUdi.Parser;
+using System;
 
-public sealed class IfaUdiFormatException : Exception
+namespace IfaUdi.Parser
 {
-    public IfaUdiFormatException(string message) : base(message)
+    public sealed class IfaUdiFormatException : Exception
     {
+        public IfaUdiFormatException(string message) : base(message)
+        {
+        }
     }
 }

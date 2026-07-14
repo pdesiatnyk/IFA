@@ -1,13 +1,16 @@
-namespace IfaUdi.Parser;
+using System;
 
-public sealed class IfaUdiBuildException : Exception
+namespace IfaUdi.Parser
 {
-    public string Field { get; }
-    public string Reason { get; }
-
-    public IfaUdiBuildException(string message, string field, string reason) : base($"{message} (field {field})")
+    public sealed class IfaUdiBuildException : Exception
     {
-        Field = field;
-        Reason = reason;
+        public string Field { get; }
+        public string Reason { get; }
+
+        public IfaUdiBuildException(string message, string field, string reason) : base($"{message} (field {field})")
+        {
+            Field = field;
+            Reason = reason;
+        }
     }
 }

@@ -1,8 +1,9 @@
-namespace IfaUdi.Parser.Models;
-
-public enum UdiScheme
+namespace IfaUdi.Parser.Models
 {
-    Ppn,
-    Hpc,
-    MasterUdiDi,
+    public enum UdiScheme
+    {
+        Ppn,
+        Hpc,
+        MasterUdiDi,
+    }
 }

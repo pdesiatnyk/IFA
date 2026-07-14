@@ -1,7 +1,8 @@
-namespace IfaUdi.Parser.Models;
-
-public sealed record ParsedUdi
+namespace IfaUdi.Parser.Models
 {
-    public required UdiDi UdiDi { get; init; }
-    public required UdiPi UdiPi { get; init; }
+    public sealed class ParsedUdi
+    {
+        public UdiDi UdiDi { get; set; }
+        public UdiPi UdiPi { get; set; }
+    }
 }

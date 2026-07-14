@@ -1,24 +1,25 @@
-namespace IfaUdi.Parser.Models;
-
-public sealed record UdiDi
+namespace IfaUdi.Parser.Models
 {
-    public required string Raw { get; init; }
-    public required UdiScheme Scheme { get; init; }
-    public required string PraCode { get; init; }
-    public required string CheckDigits { get; init; }
+    public sealed class UdiDi
+    {
+        public string Raw { get; set; }
+        public UdiScheme Scheme { get; set; }
+        public string PraCode { get; set; }
+        public string CheckDigits { get; set; }
 
-    /// <summary>PPN only.</summary>
-    public string? Pzn { get; init; }
+        /// <summary>PPN only.</summary>
+        public string Pzn { get; set; }
 
-    /// <summary>HPC and Master UDI-DI only.</summary>
-    public string? Cin { get; init; }
+        /// <summary>HPC and Master UDI-DI only.</summary>
+        public string Cin { get; set; }
 
-    /// <summary>HPC only.</summary>
-    public string? ItemReference { get; init; }
+        /// <summary>HPC only.</summary>
+        public string ItemReference { get; set; }
 
-    /// <summary>HPC only. 0-8.</summary>
-    public int? PackagingLevelIndex { get; init; }
+        /// <summary>HPC only. 0-8.</summary>
+        public int? PackagingLevelIndex { get; set; }
 
-    /// <summary>Master UDI-DI only.</summary>
-    public string? DeviceGroupCode { get; init; }
+        /// <summary>Master UDI-DI only.</summary>
+        public string DeviceGroupCode { get; set; }
+    }
 }
