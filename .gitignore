@@ -1,0 +1,52 @@
+## .NET / C# ##
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+[Ll]og/
+*.pdb
+*.cache
+*.dll
+*.exe
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+TestResults/
+*.trx
+
+## TypeScript / Node ##
+node_modules/
+dist/
+build/
+out/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+coverage/
+
+## Env / secrets ##
+.env
+.env.*
+!.env.example
+*.pfx
+*.key
+
+## Editors / OS ##
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.swp
+.DS_Store
+Thumbs.db
