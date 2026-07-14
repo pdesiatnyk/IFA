@@ -237,5 +237,130 @@
       "reason": "unsupported_pra_code",
       "note": "PRA-Code 12 (EUROCODE IBLS Blood Product Number) is a recognized IFA PRA-Code but not one of the three implemented schemes (11/13/MA)"
     }
+  ],
+  "buildFixtures": [
+    {
+      "name": "build_ppn_full",
+      "input": {
+        "udiDi": {
+          "scheme": "PPN",
+          "pznBase": "1234567"
+        },
+        "udiPi": {
+          "lot": "ABC12345",
+          "expiryDate": "2024-12-31"
+        }
+      },
+      "envelopeForm": "interpretationLine",
+      "expectedValid": true,
+      "expectedOutput": "(9N)111234567842(1T)ABC12345(D)241231",
+      "note": "Same UDI-DI as valid_ppn_di_only; same lot+expiry as valid_raw_iso15434_envelope udiPi"
+    },
+    {
+      "name": "build_ppn_remaining_pi_fields",
+      "input": {
+        "udiDi": {
+          "scheme": "PPN",
+          "pznBase": "1234567"
+        },
+        "udiPi": {
+          "manufacturingDate": "2024-01-15",
+          "serialNumber": "SN12345678",
+          "quantity": 5,
+          "price": "12.50",
+          "url": "http://example.com/x",
+          "additionalGtins": [
+            "04150123456782"
+          ]
+        }
+      },
+      "envelopeForm": "interpretationLine",
+      "expectedValid": true,
+      "expectedOutput": "(9N)111234567842(16D)20240115(S)SN12345678(Q)5(27Q)12.50(33L)http://example.com/x(8P)04150123456782",
+      "note": "Exercises the UDI-PI fields not covered by other build fixtures: 16D, S, Q, 27Q, 33L, 8P"
+    },
+    {
+      "name": "build_hpc_raw_iso15434",
+      "input": {
+        "udiDi": {
+          "scheme": "HPC",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 0
+        },
+        "udiPi": {
+          "lot": "ABC12345",
+          "expiryDate": "2024-12-31"
+        }
+      },
+      "envelopeForm": "rawIso15434",
+      "expectedValid": true,
+      "expectedOutput": "[)>\u001e06\u001d9N1312345MED777094\u001d1TABC12345\u001dD241231\u001e\u0004",
+      "note": "Same UDI-DI as valid_hpc_unit_of_use; same lot+expiry as valid_din16598_hpc udiPi; contains literal 0x1E/0x1D/0x04 control chars"
+    },
+    {
+      "name": "build_hpc_din16598",
+      "input": {
+        "udiDi": {
+          "scheme": "HPC",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 0
+        }
+      },
+      "envelopeForm": "din16598",
+      "expectedValid": true,
+      "expectedOutput": ".9N1312345MED777094"
+    },
+    {
+      "name": "build_master_udi_di_default_envelope",
+      "input": {
+        "udiDi": {
+          "scheme": "MASTER_UDI_DI",
+          "cin": "12345",
+          "deviceGroupCode": "MAX19"
+        }
+      },
+      "expectedValid": true,
+      "expectedOutput": "(9N)MA12345MAX1900",
+      "note": "envelopeForm omitted to test the default (interpretationLine); matches valid_master_udi_di exactly"
+    },
+    {
+      "name": "build_invalid_pzn_remainder_10",
+      "input": {
+        "udiDi": {
+          "scheme": "PPN",
+          "pznBase": "9999999"
+        }
+      },
+      "expectedValid": false,
+      "expectedReason": "INVALID_PZN_BASE",
+      "note": "sum=252, 252 mod 11 = 10, which is never issued as a PZN check digit"
+    },
+    {
+      "name": "build_invalid_din16598_wrong_scheme",
+      "input": {
+        "udiDi": {
+          "scheme": "PPN",
+          "pznBase": "1234567"
+        }
+      },
+      "envelopeForm": "din16598",
+      "expectedValid": false,
+      "expectedReason": "DIN16598_HPC_ONLY"
+    },
+    {
+      "name": "build_invalid_packaging_level_index_9",
+      "input": {
+        "udiDi": {
+          "scheme": "HPC",
+          "cin": "12345",
+          "itemReference": "MED777",
+          "packagingLevelIndex": 9
+        }
+      },
+      "expectedValid": false,
+      "expectedReason": "INVALID_PACKAGING_LEVEL_INDEX"
+    }
   ]
 }

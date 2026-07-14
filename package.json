@@ -1,0 +1,8 @@
+{
+  "name": "ifa-udi-workspace",
+  "private": true,
+  "workspaces": [
+    "typescript/ifa-udi-parser",
+    "showcase"
+  ]
+}

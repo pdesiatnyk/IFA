@@ -44,12 +44,43 @@ export interface BarcodeFixture {
   expected?: { udiDi: ExpectedUdiDi; udiPi: ExpectedUdiPi };
 }
 
+export interface BuildFixtureUdiDiInput {
+  scheme: string;
+  pznBase?: string;
+  cin?: string;
+  itemReference?: string;
+  packagingLevelIndex?: number;
+  deviceGroupCode?: string;
+}
+
+export interface BuildFixtureUdiPiInput {
+  lot?: string;
+  expiryDate?: string;
+  manufacturingDate?: string;
+  serialNumber?: string;
+  quantity?: number;
+  price?: string;
+  url?: string;
+  additionalGtins?: string[];
+}
+
+export interface BuildFixture {
+  name: string;
+  input: { udiDi: BuildFixtureUdiDiInput; udiPi?: BuildFixtureUdiPiInput };
+  envelopeForm?: string;
+  expectedValid: boolean;
+  expectedOutput?: string;
+  expectedReason?: string;
+  note?: string;
+}
+
 export interface FixtureFile {
   checkDigitFixtures: {
     mod97: CheckDigitFixture[];
     mod11Pzn: CheckDigitFixture[];
   };
   barcodeFixtures: BarcodeFixture[];
+  buildFixtures: BuildFixture[];
 }
 
 export function loadFixtures(): FixtureFile {

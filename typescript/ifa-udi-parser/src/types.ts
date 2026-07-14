@@ -46,3 +46,39 @@ export class IfaUdiFormatError extends Error {
     this.name = 'IfaUdiFormatError';
   }
 }
+
+export type BuildUdiDiInput =
+  | { scheme: 'PPN'; pznBase: string }
+  | { scheme: 'HPC'; cin: string; itemReference: string; packagingLevelIndex: number }
+  | { scheme: 'MASTER_UDI_DI'; cin: string; deviceGroupCode: string };
+
+export interface BuildUdiPiInput {
+  lot?: string;
+  /** "YYYY-MM-DD", or "YYYY-MM" for an unspecified day (encodes as day "00"). */
+  expiryDate?: string;
+  /** "YYYY-MM-DD" only (MFD has no month-only form). */
+  manufacturingDate?: string;
+  serialNumber?: string;
+  quantity?: number;
+  price?: string;
+  url?: string;
+  additionalGtins?: string[];
+}
+
+export interface BuildUdiInput {
+  udiDi: BuildUdiDiInput;
+  udiPi?: BuildUdiPiInput;
+}
+
+export type EnvelopeForm = 'interpretationLine' | 'rawIso15434' | 'din16598';
+
+export class IfaUdiBuildError extends Error {
+  constructor(
+    message: string,
+    public readonly field: string,
+    public readonly reason: string,
+  ) {
+    super(`${message} (field ${field})`);
+    this.name = 'IfaUdiBuildError';
+  }
+}

@@ -5,11 +5,6 @@ namespace IfaUdi.Parser;
 
 public static class UdiParser
 {
-    // ASCII characters technically excluded from LOT/SN per documentation/IFA_UDI_Parser_Analysis.md section 3.
-    private static readonly Regex ForbiddenLotSnChars = new(@"[\x00-\x1F\x7F-\xFF#$@\[\\\]\^`{|}~]", RegexOptions.Compiled);
-    private static readonly Regex ItemReferenceCharset = new(@"^[0-9A-Z.\-]+$", RegexOptions.Compiled);
-    private static readonly Regex AlphanumericUpperCharset = new(@"^[0-9A-Z]+$", RegexOptions.Compiled);
-
     public static bool Check(string barcode)
     {
         try
@@ -109,12 +104,12 @@ public static class UdiParser
         char pli = value[7 + itemReferenceLength];
         string checkDigits = value.Substring(8 + itemReferenceLength, 2);
 
-        if (!AlphanumericUpperCharset.IsMatch(cin))
+        if (!Validation.AlphanumericUpperCharset.IsMatch(cin))
         {
             throw new IfaUdiFormatException($"HPC CIN '{cin}' must be alphanumeric uppercase.");
         }
 
-        if (!ItemReferenceCharset.IsMatch(itemReference))
+        if (!Validation.ItemReferenceCharset.IsMatch(itemReference))
         {
             throw new IfaUdiFormatException($"HPC item reference '{itemReference}' contains characters outside 0-9, A-Z, '.', '-'.");
         }
@@ -154,12 +149,12 @@ public static class UdiParser
         string deviceGroupCode = value.Substring(7, deviceGroupLength);
         string checkDigits = value.Substring(7 + deviceGroupLength, 2);
 
-        if (!AlphanumericUpperCharset.IsMatch(cin))
+        if (!Validation.AlphanumericUpperCharset.IsMatch(cin))
         {
             throw new IfaUdiFormatException($"Master UDI-DI CIN '{cin}' must be alphanumeric uppercase.");
         }
 
-        if (!ItemReferenceCharset.IsMatch(deviceGroupCode))
+        if (!Validation.ItemReferenceCharset.IsMatch(deviceGroupCode))
         {
             throw new IfaUdiFormatException($"Master UDI-DI device group code '{deviceGroupCode}' contains characters outside 0-9, A-Z, '.', '-'.");
         }
@@ -261,7 +256,7 @@ public static class UdiParser
             throw new IfaUdiFormatException($"{fieldName} '{value}' must be 1-20 characters.");
         }
 
-        if (ForbiddenLotSnChars.IsMatch(value))
+        if (Validation.ForbiddenLotSnChars.IsMatch(value))
         {
             throw new IfaUdiFormatException($"{fieldName} '{value}' contains a technically excluded character.");
         }

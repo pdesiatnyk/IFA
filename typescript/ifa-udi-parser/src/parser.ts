@@ -1,10 +1,7 @@
 import { normalize, type EnvelopeField } from './envelope.js';
 import { mod97, mod11Pzn } from './checkDigits.js';
 import { IfaUdiFormatError, type ParsedUdi, type UdiDi, type UdiPi } from './types.js';
-
-const FORBIDDEN_LOT_SN_CHARS = /[\x00-\x1F\x7F-\xFF#$@[\\\]^`{|}~]/;
-const ITEM_REFERENCE_CHARSET = /^[0-9A-Z.-]+$/;
-const ALPHANUMERIC_UPPER_CHARSET = /^[0-9A-Z]+$/;
+import { FORBIDDEN_LOT_SN_CHARS, ITEM_REFERENCE_CHARSET, ALPHANUMERIC_UPPER_CHARSET } from './validation.js';
 
 export function check(barcode: string): boolean {
   try {

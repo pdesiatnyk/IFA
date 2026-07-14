@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using IfaUdi.Parser.Models;
 
 namespace IfaUdi.Parser;
 
@@ -32,7 +33,7 @@ internal static class Envelope
             return ParseRawIso15434(barcode);
         }
 
-        if (barcode.StartsWith('.') && barcode.Contains('^'))
+        if (barcode.StartsWith('.'))
         {
             return ParseDin16598(barcode);
         }
@@ -89,6 +90,17 @@ internal static class Envelope
 
         return result;
     }
+
+    public static string Serialize(List<(string Di, string Value)> fields, EnvelopeForm form) => form switch
+    {
+        EnvelopeForm.InterpretationLine => string.Concat(fields.Select(f => $"({f.Di}){f.Value}")),
+        EnvelopeForm.RawIso15434 =>
+            $"[)>{RecordSeparator}06{GroupSeparator}" +
+            string.Join(GroupSeparator, fields.Select(f => f.Di + f.Value)) +
+            $"{RecordSeparator}{EndOfTransmission}",
+        EnvelopeForm.Din16598 => "." + string.Join('^', fields.Select(f => f.Di + f.Value)),
+        _ => throw new ArgumentOutOfRangeException(nameof(form)),
+    };
 
     private static List<(string Di, string Value)> SplitDataIdentifiers(string[] rawFields)
     {

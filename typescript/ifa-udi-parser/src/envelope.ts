@@ -1,4 +1,4 @@
-import { IfaUdiFormatError } from './types.js';
+import { IfaUdiFormatError, type EnvelopeForm } from './types.js';
 
 /**
  * Detects and normalizes the three accepted IFA UDI barcode envelope forms (raw ISO/IEC 15434
@@ -30,7 +30,7 @@ export function normalize(barcode: string): EnvelopeField[] {
     return parseRawIso15434(barcode);
   }
 
-  if (barcode.startsWith('.') && barcode.includes('^')) {
+  if (barcode.startsWith('.')) {
     return parseDin16598(barcode);
   }
 
@@ -83,6 +83,21 @@ function parseInterpretationLine(barcode: string): EnvelopeField[] {
   }
 
   return result;
+}
+
+export function serialize(fields: EnvelopeField[], form: EnvelopeForm): string {
+  switch (form) {
+    case 'interpretationLine':
+      return fields.map((f) => `(${f.di})${f.value}`).join('');
+    case 'rawIso15434':
+      return (
+        `[)>${RECORD_SEPARATOR}06${GROUP_SEPARATOR}` +
+        fields.map((f) => `${f.di}${f.value}`).join(GROUP_SEPARATOR) +
+        `${RECORD_SEPARATOR}${END_OF_TRANSMISSION}`
+      );
+    case 'din16598':
+      return '.' + fields.map((f) => `${f.di}${f.value}`).join('^');
+  }
 }
 
 function splitDataIdentifiers(rawFields: string[]): EnvelopeField[] {

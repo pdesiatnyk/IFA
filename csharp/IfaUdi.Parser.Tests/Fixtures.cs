@@ -36,9 +36,39 @@ public sealed record BarcodeFixture(
     string? Note,
     ExpectedParsedUdi? Expected);
 
+public sealed record BuildFixtureUdiDiInput(
+    string Scheme,
+    string? PznBase,
+    string? Cin,
+    string? ItemReference,
+    int? PackagingLevelIndex,
+    string? DeviceGroupCode);
+
+public sealed record BuildFixtureUdiPiInput(
+    string? Lot,
+    string? ExpiryDate,
+    string? ManufacturingDate,
+    string? SerialNumber,
+    int? Quantity,
+    string? Price,
+    string? Url,
+    List<string>? AdditionalGtins);
+
+public sealed record BuildFixtureInput(BuildFixtureUdiDiInput UdiDi, BuildFixtureUdiPiInput? UdiPi);
+
+public sealed record BuildFixture(
+    string Name,
+    BuildFixtureInput Input,
+    string? EnvelopeForm,
+    bool ExpectedValid,
+    string? ExpectedOutput,
+    string? ExpectedReason,
+    string? Note);
+
 internal sealed record FixtureFile(
     Dictionary<string, List<CheckDigitFixture>> CheckDigitFixtures,
-    List<BarcodeFixture> BarcodeFixtures);
+    List<BarcodeFixture> BarcodeFixtures,
+    List<BuildFixture> BuildFixtures);
 
 internal static class Fixtures
 {
@@ -60,7 +90,8 @@ internal static class Fixtures
         }
 
         var barcodeFixtures = doc.RootElement.GetProperty("barcodeFixtures").Deserialize<List<BarcodeFixture>>(Options)!;
+        var buildFixtures = doc.RootElement.GetProperty("buildFixtures").Deserialize<List<BuildFixture>>(Options)!;
 
-        return new FixtureFile(checkDigitFixtures, barcodeFixtures);
+        return new FixtureFile(checkDigitFixtures, barcodeFixtures, buildFixtures);
     }
 }
