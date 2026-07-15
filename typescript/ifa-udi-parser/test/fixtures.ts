@@ -20,6 +20,7 @@ export interface ExpectedUdiDi {
   itemReference?: string;
   packagingLevelIndex?: number;
   deviceGroupCode?: string;
+  nationalCode?: string;
   checkDigits: string;
 }
 
@@ -51,6 +52,7 @@ export interface BuildFixtureUdiDiInput {
   itemReference?: string;
   packagingLevelIndex?: number;
   deviceGroupCode?: string;
+  nationalCode?: string;
 }
 
 export interface BuildFixtureUdiPiInput {

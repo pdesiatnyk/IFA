@@ -13,6 +13,8 @@ public sealed class UdiSchemeJsonConverter : JsonConverter<UdiScheme>
             "PPN" => UdiScheme.Ppn,
             "HPC" => UdiScheme.Hpc,
             "MASTER_UDI_DI" => UdiScheme.MasterUdiDi,
+            "AIC" => UdiScheme.Aic,
+            "AIM" => UdiScheme.Aim,
             var value => throw new JsonException($"Unrecognized UdiScheme value '{value}'."),
         };
 
@@ -22,6 +24,8 @@ public sealed class UdiSchemeJsonConverter : JsonConverter<UdiScheme>
             UdiScheme.Ppn => "PPN",
             UdiScheme.Hpc => "HPC",
             UdiScheme.MasterUdiDi => "MASTER_UDI_DI",
+            UdiScheme.Aic => "AIC",
+            UdiScheme.Aim => "AIM",
             _ => throw new ArgumentOutOfRangeException(nameof(value)),
         });
 }

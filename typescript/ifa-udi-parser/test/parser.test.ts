@@ -34,6 +34,7 @@ describe('parseUdi', () => {
       expect(actual.udiDi.itemReference).toBe(expected.udiDi.itemReference);
       expect(actual.udiDi.packagingLevelIndex).toBe(expected.udiDi.packagingLevelIndex);
       expect(actual.udiDi.deviceGroupCode).toBe(expected.udiDi.deviceGroupCode);
+      expect(actual.udiDi.nationalCode).toBe(expected.udiDi.nationalCode);
       expect(actual.udiDi.checkDigits).toBe(expected.udiDi.checkDigits);
 
       expect(actual.udiPi.lot).toBe(expected.udiPi.lot);

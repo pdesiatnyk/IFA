@@ -44,6 +44,10 @@ namespace IfaUdi.Parser
                     return BuildMasterUdiDi(
                         input.Cin ?? throw new IfaUdiBuildException("Required for the Master UDI-DI scheme.", "udiDi.cin", "MISSING_FIELD"),
                         input.DeviceGroupCode ?? throw new IfaUdiBuildException("Required for the Master UDI-DI scheme.", "udiDi.deviceGroupCode", "MISSING_FIELD"));
+                case UdiScheme.Aic:
+                    return BuildNationalCodeScheme("15", input.NationalCode ?? throw new IfaUdiBuildException("Required for the AIC scheme.", "udiDi.nationalCode", "MISSING_FIELD"));
+                case UdiScheme.Aim:
+                    return BuildNationalCodeScheme("17", input.NationalCode ?? throw new IfaUdiBuildException("Required for the AIM scheme.", "udiDi.nationalCode", "MISSING_FIELD"));
                 default:
                     throw new ArgumentOutOfRangeException(nameof(input));
             }
@@ -96,6 +100,17 @@ namespace IfaUdi.Parser
             }
 
             string value = $"MA{cin}{deviceGroupCode}";
+            return value + CheckDigits.Mod97(value);
+        }
+
+        private static string BuildNationalCodeScheme(string praCode, string nationalCode)
+        {
+            if (nationalCode.Length < 1 || nationalCode.Length > 18 || !Validation.ItemReferenceCharset.IsMatch(nationalCode))
+            {
+                throw new IfaUdiBuildException("Must be 1-18 characters of 0-9, A-Z, '.' or '-'.", "udiDi.nationalCode", "INVALID_NATIONAL_CODE");
+            }
+
+            string value = $"{praCode}{nationalCode}";
             return value + CheckDigits.Mod97(value);
         }
 

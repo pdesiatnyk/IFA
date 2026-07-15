@@ -20,6 +20,12 @@ namespace IfaUdi.Parser.Models
 
         /// <summary>Master UDI-DI only. 1-19 chars of 0-9, A-Z, '.', '-'.</summary>
         public string DeviceGroupCode { get; set; }
+
+        /// <summary>
+        /// AIC and AIM only. Opaque national code. 1-18 chars of 0-9, A-Z, '.', '-'. Bounds are
+        /// provisional -- IFA does not publish a format spec for this code.
+        /// </summary>
+        public string NationalCode { get; set; }
     }
 
     public sealed class BuildUdiPiInput

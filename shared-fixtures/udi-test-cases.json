@@ -36,6 +36,16 @@
         "input": "1312345MED7779",
         "expected": "35",
         "note": "same HPC item, PLI 9 (reserved/invalid for UDI, checksum still computable)"
+      },
+      {
+        "input": "15032220128",
+        "expected": "18",
+        "note": "PRA 15 (AIC) + illustrative 9-digit national code 032220128 -> AIC 1503222012818"
+      },
+      {
+        "input": "175834127",
+        "expected": "04",
+        "note": "PRA 17 (AIM) + illustrative 7-digit national code 5834127 -> AIM 17583412704"
       }
     ],
     "mod11Pzn": [
@@ -235,7 +245,65 @@
       "inputForm": "interpretationLine",
       "expectedValid": false,
       "reason": "unsupported_pra_code",
-      "note": "PRA-Code 12 (EUROCODE IBLS Blood Product Number) is a recognized IFA PRA-Code but not one of the three implemented schemes (11/13/MA)"
+      "note": "PRA-Code 12 (EUROCODE IBLS Blood Product Number) is a recognized IFA PRA-Code but not one of the implemented schemes (11/13/15/17/MA)"
+    },
+    {
+      "name": "valid_aic_di_only",
+      "input": "(9N)1503222012818",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "note": "Illustrative Italian AIC code -- IFA does not document an inner format; only length/charset bounds + outer Mod-97 are validated",
+      "expected": {
+        "udiDi": {
+          "raw": "1503222012818",
+          "scheme": "AIC",
+          "praCode": "15",
+          "nationalCode": "032220128",
+          "checkDigits": "18"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "valid_aim_di_only",
+      "input": "(9N)17583412704",
+      "inputForm": "interpretationLine",
+      "expectedValid": true,
+      "note": "Illustrative Portugal AIM code -- IFA does not document an inner format; only length/charset bounds + outer Mod-97 are validated",
+      "expected": {
+        "udiDi": {
+          "raw": "17583412704",
+          "scheme": "AIM",
+          "praCode": "17",
+          "nationalCode": "5834127",
+          "checkDigits": "04"
+        },
+        "udiPi": {}
+      }
+    },
+    {
+      "name": "invalid_aic_bad_check_digit",
+      "input": "(9N)1503222012819",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "check_digit_mismatch",
+      "note": "Same as valid_aic_di_only with the last digit changed from 18 to 19"
+    },
+    {
+      "name": "invalid_aim_bad_check_digit",
+      "input": "(9N)17583412705",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "check_digit_mismatch",
+      "note": "Same as valid_aim_di_only with the last digit changed from 04 to 05"
+    },
+    {
+      "name": "invalid_aic_national_code_too_long",
+      "input": "(9N)15111111111111111111141",
+      "inputForm": "interpretationLine",
+      "expectedValid": false,
+      "reason": "malformed_length",
+      "note": "National code is 19 chars, exceeding the provisional 1-18 char bound (checksum 41 is arithmetically correct; the length bound is what rejects it)"
     }
   ],
   "buildFixtures": [
@@ -361,6 +429,60 @@
       },
       "expectedValid": false,
       "expectedReason": "INVALID_PACKAGING_LEVEL_INDEX"
+    },
+    {
+      "name": "build_aic_full",
+      "input": {
+        "udiDi": {
+          "scheme": "AIC",
+          "nationalCode": "032220128"
+        },
+        "udiPi": {
+          "lot": "ABC12345",
+          "expiryDate": "2024-12-31"
+        }
+      },
+      "envelopeForm": "interpretationLine",
+      "expectedValid": true,
+      "expectedOutput": "(9N)1503222012818(1T)ABC12345(D)241231",
+      "note": "Same UDI-DI as valid_aic_di_only"
+    },
+    {
+      "name": "build_aim_full",
+      "input": {
+        "udiDi": {
+          "scheme": "AIM",
+          "nationalCode": "5834127"
+        }
+      },
+      "envelopeForm": "interpretationLine",
+      "expectedValid": true,
+      "expectedOutput": "(9N)17583412704",
+      "note": "Same UDI-DI as valid_aim_di_only"
+    },
+    {
+      "name": "build_invalid_aic_national_code_bad_charset",
+      "input": {
+        "udiDi": {
+          "scheme": "AIC",
+          "nationalCode": "abc123"
+        }
+      },
+      "expectedValid": false,
+      "expectedReason": "INVALID_NATIONAL_CODE",
+      "note": "Lowercase letters are outside the 0-9A-Z.- charset"
+    },
+    {
+      "name": "build_invalid_aim_national_code_too_long",
+      "input": {
+        "udiDi": {
+          "scheme": "AIM",
+          "nationalCode": "1111111111111111111"
+        }
+      },
+      "expectedValid": false,
+      "expectedReason": "INVALID_NATIONAL_CODE",
+      "note": "20 characters, exceeding the provisional 1-18 char bound"
     }
   ]
 }

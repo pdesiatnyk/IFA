@@ -1,4 +1,4 @@
-export type UdiScheme = 'PPN' | 'HPC' | 'MASTER_UDI_DI';
+export type UdiScheme = 'PPN' | 'HPC' | 'MASTER_UDI_DI' | 'AIC' | 'AIM';
 
 export interface UdiDi {
   raw: string;
@@ -20,6 +20,13 @@ export interface UdiDi {
 
   /** Master UDI-DI only. */
   deviceGroupCode?: string;
+
+  /**
+   * AIC and AIM only. Opaque national code (Italy AIC / Portugal AIM) -- IFA does not publish
+   * a length/charset/check-digit spec for this code, so only overall bounds (1-18 chars,
+   * 0-9A-Z.-) plus the outer Mod-97 checksum are validated.
+   */
+  nationalCode?: string;
 }
 
 export interface UdiPi {
@@ -50,7 +57,9 @@ export class IfaUdiFormatError extends Error {
 export type BuildUdiDiInput =
   | { scheme: 'PPN'; pznBase: string }
   | { scheme: 'HPC'; cin: string; itemReference: string; packagingLevelIndex: number }
-  | { scheme: 'MASTER_UDI_DI'; cin: string; deviceGroupCode: string };
+  | { scheme: 'MASTER_UDI_DI'; cin: string; deviceGroupCode: string }
+  | { scheme: 'AIC'; nationalCode: string }
+  | { scheme: 'AIM'; nationalCode: string };
 
 export interface BuildUdiPiInput {
   lot?: string;

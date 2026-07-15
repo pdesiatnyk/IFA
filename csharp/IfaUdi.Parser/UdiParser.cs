@@ -54,7 +54,17 @@ namespace IfaUdi.Parser
                 return ParseMasterUdiDi(value);
             }
 
-            throw new IfaUdiFormatException($"UDI-DI value '{value}' does not start with a supported PRA-Code (11, 13, or MA).");
+            if (value.StartsWith("15", StringComparison.Ordinal))
+            {
+                return ParseNationalCodeScheme(value, "15", UdiScheme.Aic);
+            }
+
+            if (value.StartsWith("17", StringComparison.Ordinal))
+            {
+                return ParseNationalCodeScheme(value, "17", UdiScheme.Aim);
+            }
+
+            throw new IfaUdiFormatException($"UDI-DI value '{value}' does not start with a supported PRA-Code (11, 13, 15, 17, or MA).");
         }
 
         private static UdiDi ParsePpn(string value)
@@ -175,6 +185,37 @@ namespace IfaUdi.Parser
                 PraCode = "MA",
                 Cin = cin,
                 DeviceGroupCode = deviceGroupCode,
+                CheckDigits = checkDigits,
+            };
+        }
+
+        private static UdiDi ParseNationalCodeScheme(string value, string praCode, UdiScheme scheme)
+        {
+            if (value.Length < 5 || value.Length > 22)
+            {
+                throw new IfaUdiFormatException($"{scheme} value must be 5-22 characters, got {value.Length}.");
+            }
+
+            string nationalCode = value.Substring(2, value.Length - 4);
+            string checkDigits = value.Substring(value.Length - 2, 2);
+
+            if (!Validation.ItemReferenceCharset.IsMatch(nationalCode))
+            {
+                throw new IfaUdiFormatException($"{scheme} national code '{nationalCode}' contains characters outside 0-9, A-Z, '.', '-'.");
+            }
+
+            string expectedCheck = CheckDigits.Mod97(value.Substring(0, value.Length - 2));
+            if (expectedCheck != checkDigits)
+            {
+                throw new IfaUdiFormatException($"{scheme} check digits mismatch: expected '{expectedCheck}', got '{checkDigits}'.");
+            }
+
+            return new UdiDi
+            {
+                Raw = value,
+                Scheme = scheme,
+                PraCode = praCode,
+                NationalCode = nationalCode,
                 CheckDigits = checkDigits,
             };
         }

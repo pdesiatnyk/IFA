@@ -21,5 +21,12 @@ namespace IfaUdi.Parser.Models
 
         /// <summary>Master UDI-DI only.</summary>
         public string DeviceGroupCode { get; set; }
+
+        /// <summary>
+        /// AIC and AIM only. Opaque national code (Italy AIC / Portugal AIM) -- IFA does not
+        /// publish a length/charset/check-digit spec for this code, so only overall bounds
+        /// (1-18 chars, 0-9A-Z.-) plus the outer Mod-97 checksum are validated.
+        /// </summary>
+        public string NationalCode { get; set; }
     }
 }

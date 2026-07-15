@@ -34,6 +34,10 @@ function buildUdiDi(input: BuildUdiInput['udiDi']): string {
       return buildHpc(input.cin, input.itemReference, input.packagingLevelIndex);
     case 'MASTER_UDI_DI':
       return buildMasterUdiDi(input.cin, input.deviceGroupCode);
+    case 'AIC':
+      return buildNationalCodeScheme('15', input.nationalCode);
+    case 'AIM':
+      return buildNationalCodeScheme('17', input.nationalCode);
   }
 }
 
@@ -83,6 +87,15 @@ function buildMasterUdiDi(cin: string, deviceGroupCode: string): string {
   }
 
   const value = `MA${cin}${deviceGroupCode}`;
+  return value + mod97(value);
+}
+
+function buildNationalCodeScheme(praCode: string, nationalCode: string): string {
+  if (nationalCode.length < 1 || nationalCode.length > 18 || !ITEM_REFERENCE_CHARSET.test(nationalCode)) {
+    throw new IfaUdiBuildError('Must be 1-18 characters of 0-9, A-Z, \'.\' or \'-\'.', 'udiDi.nationalCode', 'INVALID_NATIONAL_CODE');
+  }
+
+  const value = `${praCode}${nationalCode}`;
   return value + mod97(value);
 }
 

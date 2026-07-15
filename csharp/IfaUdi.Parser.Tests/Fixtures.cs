@@ -13,6 +13,7 @@ public sealed record ExpectedUdiDi(
     string? ItemReference,
     int? PackagingLevelIndex,
     string? DeviceGroupCode,
+    string? NationalCode,
     string CheckDigits);
 
 public sealed record ExpectedUdiPi(
@@ -42,7 +43,8 @@ public sealed record BuildFixtureUdiDiInput(
     string? Cin,
     string? ItemReference,
     int? PackagingLevelIndex,
-    string? DeviceGroupCode);
+    string? DeviceGroupCode,
+    string? NationalCode);
 
 public sealed record BuildFixtureUdiPiInput(
     string? Lot,

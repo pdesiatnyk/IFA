@@ -24,6 +24,8 @@ export const SAMPLE_UDIS: SampleUdi[] = [
   { category: 'HPC', label: 'Unit of use (packaging level 0)', barcode: '(9N)1312345MED777094' },
   { category: 'HPC', label: 'Pack of 3 (packaging level 2)', barcode: '(9N)1312345MED777227' },
   { category: 'Master UDI-DI', label: 'Device group MAX19', barcode: '(9N)MA12345MAX1900' },
+  { category: 'AIC', label: 'Illustrative Italian AIC (synthesized -- not a real registered code)', barcode: '(9N)1503222012818' },
+  { category: 'AIM', label: 'Illustrative Portugal AIM (synthesized -- not a real registered code)', barcode: '(9N)17583412704' },
   {
     category: 'Envelope forms',
     label: 'DIN 16598 keyboard form (HPC only)',

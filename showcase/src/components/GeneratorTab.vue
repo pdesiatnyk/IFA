@@ -20,6 +20,8 @@ const itemReference = ref('MED777');
 const packagingLevelIndex = ref(0);
 // Master UDI-DI
 const deviceGroupCode = ref('MAX19');
+// AIC / AIM
+const nationalCode = ref('032220128');
 
 // UDI-PI (all optional)
 const lot = ref('');
@@ -39,13 +41,23 @@ watch(scheme, (value) => {
   }
 });
 
+function buildDiInput(): BuildUdiInput['udiDi'] {
+  switch (scheme.value) {
+    case 'PPN':
+      return { scheme: 'PPN', pznBase: pznBase.value };
+    case 'HPC':
+      return { scheme: 'HPC', cin: cin.value, itemReference: itemReference.value, packagingLevelIndex: packagingLevelIndex.value };
+    case 'MASTER_UDI_DI':
+      return { scheme: 'MASTER_UDI_DI', cin: cin.value, deviceGroupCode: deviceGroupCode.value };
+    case 'AIC':
+      return { scheme: 'AIC', nationalCode: nationalCode.value };
+    case 'AIM':
+      return { scheme: 'AIM', nationalCode: nationalCode.value };
+  }
+}
+
 const buildInput = computed<BuildUdiInput>(() => {
-  const udiDi: BuildUdiInput['udiDi'] =
-    scheme.value === 'PPN'
-      ? { scheme: 'PPN', pznBase: pznBase.value }
-      : scheme.value === 'HPC'
-        ? { scheme: 'HPC', cin: cin.value, itemReference: itemReference.value, packagingLevelIndex: packagingLevelIndex.value }
-        : { scheme: 'MASTER_UDI_DI', cin: cin.value, deviceGroupCode: deviceGroupCode.value };
+  const udiDi = buildDiInput();
 
   const udiPi: BuildUdiPiInput = {};
   if (lot.value) udiPi.lot = lot.value;
@@ -98,6 +110,8 @@ function useInCompare() {
           <option value="PPN">PPN (PZN-based)</option>
           <option value="HPC">HPC (Health Product Code)</option>
           <option value="MASTER_UDI_DI">Master UDI-DI</option>
+          <option value="AIC">AIC (Italy)</option>
+          <option value="AIM">AIM (Portugal)</option>
         </select>
       </div>
 
@@ -123,7 +137,7 @@ function useInCompare() {
         </div>
       </div>
 
-      <div v-else class="field-grid">
+      <div v-else-if="scheme === 'MASTER_UDI_DI'" class="field-grid">
         <div class="field">
           <label for="mudi-cin">CIN (5 chars)</label>
           <input id="mudi-cin" v-model="cin" type="text" maxlength="5" placeholder="12345" />
@@ -131,6 +145,13 @@ function useInCompare() {
         <div class="field">
           <label for="mudi-device-group">Device group code (1-19 chars)</label>
           <input id="mudi-device-group" v-model="deviceGroupCode" type="text" maxlength="19" placeholder="MAX19" />
+        </div>
+      </div>
+
+      <div v-else class="field-grid">
+        <div class="field">
+          <label for="national-code">National code (1-18 chars, opaque -- IFA does not document an inner format)</label>
+          <input id="national-code" v-model="nationalCode" type="text" maxlength="18" placeholder="032220128" />
         </div>
       </div>
     </fieldset>

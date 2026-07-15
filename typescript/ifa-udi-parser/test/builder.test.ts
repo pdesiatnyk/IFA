@@ -42,10 +42,13 @@ describe('buildUdi', () => {
         expect(parsed.udiDi.cin).toBe(input.udiDi.cin);
         expect(parsed.udiDi.itemReference).toBe(input.udiDi.itemReference);
         expect(parsed.udiDi.packagingLevelIndex).toBe(input.udiDi.packagingLevelIndex);
-      } else {
+      } else if (input.udiDi.scheme === 'MASTER_UDI_DI') {
         expect(parsed.udiDi.scheme).toBe('MASTER_UDI_DI');
         expect(parsed.udiDi.cin).toBe(input.udiDi.cin);
         expect(parsed.udiDi.deviceGroupCode).toBe(input.udiDi.deviceGroupCode);
+      } else {
+        expect(parsed.udiDi.scheme).toBe(input.udiDi.scheme);
+        expect(parsed.udiDi.nationalCode).toBe(input.udiDi.nationalCode);
       }
 
       if (input.udiPi) {

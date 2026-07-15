@@ -59,6 +59,14 @@ public class UdiBuilderTests
                 Assert.Equal(input.UdiDi.Cin, parsed.UdiDi.Cin);
                 Assert.Equal(input.UdiDi.DeviceGroupCode, parsed.UdiDi.DeviceGroupCode);
                 break;
+            case UdiScheme.Aic:
+                Assert.Equal(UdiScheme.Aic, parsed.UdiDi.Scheme);
+                Assert.Equal(input.UdiDi.NationalCode, parsed.UdiDi.NationalCode);
+                break;
+            case UdiScheme.Aim:
+                Assert.Equal(UdiScheme.Aim, parsed.UdiDi.Scheme);
+                Assert.Equal(input.UdiDi.NationalCode, parsed.UdiDi.NationalCode);
+                break;
         }
 
         if (input.UdiPi is not null)
@@ -98,6 +106,7 @@ public class UdiBuilderTests
             ItemReference = input.UdiDi.ItemReference,
             PackagingLevelIndex = input.UdiDi.PackagingLevelIndex,
             DeviceGroupCode = input.UdiDi.DeviceGroupCode,
+            NationalCode = input.UdiDi.NationalCode,
         },
         UdiPi = input.UdiPi is null ? null : new BuildUdiPiInput
         {
@@ -117,6 +126,8 @@ public class UdiBuilderTests
         "PPN" => UdiScheme.Ppn,
         "HPC" => UdiScheme.Hpc,
         "MASTER_UDI_DI" => UdiScheme.MasterUdiDi,
+        "AIC" => UdiScheme.Aic,
+        "AIM" => UdiScheme.Aim,
         _ => throw new ArgumentOutOfRangeException(nameof(scheme)),
     };
 

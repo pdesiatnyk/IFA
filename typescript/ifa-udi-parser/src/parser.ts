@@ -1,6 +1,6 @@
 import { normalize, type EnvelopeField } from './envelope.js';
 import { mod97, mod11Pzn } from './checkDigits.js';
-import { IfaUdiFormatError, type ParsedUdi, type UdiDi, type UdiPi } from './types.js';
+import { IfaUdiFormatError, type ParsedUdi, type UdiDi, type UdiPi, type UdiScheme } from './types.js';
 import { FORBIDDEN_LOT_SN_CHARS, ITEM_REFERENCE_CHARSET, ALPHANUMERIC_UPPER_CHARSET } from './validation.js';
 
 export function check(barcode: string): boolean {
@@ -44,7 +44,15 @@ function parseUdiDi(value: string): UdiDi {
     return parseMasterUdiDi(value);
   }
 
-  throw new IfaUdiFormatError(`UDI-DI value '${value}' does not start with a supported PRA-Code (11, 13, or MA).`);
+  if (value.startsWith('15')) {
+    return parseNationalCodeScheme(value, '15', 'AIC');
+  }
+
+  if (value.startsWith('17')) {
+    return parseNationalCodeScheme(value, '17', 'AIM');
+  }
+
+  throw new IfaUdiFormatError(`UDI-DI value '${value}' does not start with a supported PRA-Code (11, 13, 15, 17, or MA).`);
 }
 
 function parsePpn(value: string): UdiDi {
@@ -150,6 +158,32 @@ function parseMasterUdiDi(value: string): UdiDi {
     praCode: 'MA',
     cin,
     deviceGroupCode,
+    checkDigits,
+  };
+}
+
+function parseNationalCodeScheme(value: string, praCode: string, scheme: UdiScheme): UdiDi {
+  if (value.length < 5 || value.length > 22) {
+    throw new IfaUdiFormatError(`${scheme} value must be 5-22 characters, got ${value.length}.`);
+  }
+
+  const nationalCode = value.slice(2, -2);
+  const checkDigits = value.slice(-2);
+
+  if (!ITEM_REFERENCE_CHARSET.test(nationalCode)) {
+    throw new IfaUdiFormatError(`${scheme} national code '${nationalCode}' contains characters outside 0-9, A-Z, '.', '-'.`);
+  }
+
+  const expectedCheck = mod97(value.slice(0, -2));
+  if (expectedCheck !== checkDigits) {
+    throw new IfaUdiFormatError(`${scheme} check digits mismatch: expected '${expectedCheck}', got '${checkDigits}'.`);
+  }
+
+  return {
+    raw: value,
+    scheme,
+    praCode,
+    nationalCode,
     checkDigits,
   };
 }

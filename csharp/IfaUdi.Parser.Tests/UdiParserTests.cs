@@ -37,6 +37,7 @@ public class UdiParserTests
         Assert.Equal(expected.UdiDi.ItemReference, actual.UdiDi.ItemReference);
         Assert.Equal(expected.UdiDi.PackagingLevelIndex, actual.UdiDi.PackagingLevelIndex);
         Assert.Equal(expected.UdiDi.DeviceGroupCode, actual.UdiDi.DeviceGroupCode);
+        Assert.Equal(expected.UdiDi.NationalCode, actual.UdiDi.NationalCode);
         Assert.Equal(expected.UdiDi.CheckDigits, actual.UdiDi.CheckDigits);
 
         Assert.Equal(expected.UdiPi.Lot, actual.UdiPi.Lot);
@@ -54,6 +55,8 @@ public class UdiParserTests
         UdiScheme.Ppn => "PPN",
         UdiScheme.Hpc => "HPC",
         UdiScheme.MasterUdiDi => "MASTER_UDI_DI",
+        UdiScheme.Aic => "AIC",
+        UdiScheme.Aim => "AIM",
         _ => throw new ArgumentOutOfRangeException(nameof(scheme)),
     };
 }
