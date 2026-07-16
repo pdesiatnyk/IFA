@@ -23,7 +23,7 @@ namespace IfaUdi.Parser
 
         public static ParsedUdi ParseUdi(string barcode)
         {
-            List<(string Di, string Value)> fields = Envelope.Normalize(barcode);
+            (EnvelopeForm form, List<(string Di, string Value)> fields) = Envelope.Normalize(barcode);
 
             List<(string Di, string Value)> udiDiFields = fields.Where(f => f.Di == "9N").ToList();
             if (udiDiFields.Count != 1)
@@ -32,9 +32,12 @@ namespace IfaUdi.Parser
             }
 
             UdiDi udiDi = ParseUdiDi(udiDiFields[0].Value);
-            UdiPi udiPi = ParseUdiPi(fields.Where(f => f.Di != "9N"));
 
-            return new ParsedUdi { UdiDi = udiDi, UdiPi = udiPi };
+            List<(string Di, string Value)> piFields = fields.Where(f => f.Di != "9N").ToList();
+            UdiPi udiPi = ParseUdiPi(piFields);
+            udiPi.Raw = Envelope.JoinFields(piFields, form);
+
+            return new ParsedUdi { Raw = barcode, UdiDi = udiDi, UdiPi = udiPi };
         }
 
         private static UdiDi ParseUdiDi(string value)

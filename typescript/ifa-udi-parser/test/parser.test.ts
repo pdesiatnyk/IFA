@@ -26,6 +26,7 @@ describe('parseUdi', () => {
       const actual = parseUdi(fixture.input);
       const expected = fixture.expected!;
 
+      expect(actual.raw).toBe(expected.raw);
       expect(actual.udiDi.raw).toBe(expected.udiDi.raw);
       expect(actual.udiDi.scheme).toBe(expected.udiDi.scheme);
       expect(actual.udiDi.praCode).toBe(expected.udiDi.praCode);
@@ -37,6 +38,7 @@ describe('parseUdi', () => {
       expect(actual.udiDi.nationalCode).toBe(expected.udiDi.nationalCode);
       expect(actual.udiDi.checkDigits).toBe(expected.udiDi.checkDigits);
 
+      expect(actual.udiPi.raw).toBe(expected.udiPi.raw);
       expect(actual.udiPi.lot).toBe(expected.udiPi.lot);
       expect(actual.udiPi.expiryDate).toBe(expected.udiPi.expiryDate);
       expect(actual.udiPi.manufacturingDate).toBe(expected.udiPi.manufacturingDate);

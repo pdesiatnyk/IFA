@@ -1,4 +1,4 @@
-import { normalize, type EnvelopeField } from './envelope.js';
+import { normalize, joinFields, type EnvelopeField } from './envelope.js';
 import { mod97, mod11Pzn } from './checkDigits.js';
 import { IfaUdiFormatError, type ParsedUdi, type UdiDi, type UdiPi, type UdiScheme } from './types.js';
 import { FORBIDDEN_LOT_SN_CHARS, ITEM_REFERENCE_CHARSET, ALPHANUMERIC_UPPER_CHARSET } from './validation.js';
@@ -16,7 +16,7 @@ export function check(barcode: string): boolean {
 }
 
 export function parseUdi(barcode: string): ParsedUdi {
-  const fields = normalize(barcode);
+  const { form, fields } = normalize(barcode);
 
   const udiDiFields = fields.filter((f) => f.di === '9N');
   if (udiDiFields.length !== 1) {
@@ -26,9 +26,12 @@ export function parseUdi(barcode: string): ParsedUdi {
   }
 
   const udiDi = parseUdiDi(udiDiFields[0].value);
-  const udiPi = parseUdiPi(fields.filter((f) => f.di !== '9N'));
 
-  return { udiDi, udiPi };
+  const piFields = fields.filter((f) => f.di !== '9N');
+  const udiPi = parseUdiPi(piFields);
+  udiPi.raw = joinFields(piFields, form);
+
+  return { raw: barcode, udiDi, udiPi };
 }
 
 function parseUdiDi(value: string): UdiDi {
@@ -189,7 +192,7 @@ function parseNationalCodeScheme(value: string, praCode: string, scheme: UdiSche
 }
 
 function parseUdiPi(fields: EnvelopeField[]): UdiPi {
-  const result: UdiPi = {};
+  const result: UdiPi = { raw: '' };
   let additionalGtins: string[] | undefined;
 
   for (const { di, value } of fields) {

@@ -1,6 +1,6 @@
 {
   "name": "ifa-udi-parser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Parser and validator for IFA UDI barcodes (medical device UDI-DI / UDI-PI, PPN/HPC/Master UDI-DI schemes)",
   "type": "module",
   "main": "dist/index.js",

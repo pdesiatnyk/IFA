@@ -21,21 +21,26 @@ export interface EnvelopeField {
   value: string;
 }
 
-export function normalize(barcode: string): EnvelopeField[] {
+export interface NormalizedEnvelope {
+  form: EnvelopeForm;
+  fields: EnvelopeField[];
+}
+
+export function normalize(barcode: string): NormalizedEnvelope {
   if (!barcode) {
     throw new IfaUdiFormatError('Barcode input must not be empty.');
   }
 
   if (barcode.startsWith('[)>')) {
-    return parseRawIso15434(barcode);
+    return { form: 'rawIso15434', fields: parseRawIso15434(barcode) };
   }
 
   if (barcode.startsWith('.')) {
-    return parseDin16598(barcode);
+    return { form: 'din16598', fields: parseDin16598(barcode) };
   }
 
   if (barcode.startsWith('(') && new RegExp(INTERPRETATION_LINE_FIELD_PATTERN).test(barcode)) {
-    return parseInterpretationLine(barcode);
+    return { form: 'interpretationLine', fields: parseInterpretationLine(barcode) };
   }
 
   throw new IfaUdiFormatError(
@@ -88,15 +93,33 @@ function parseInterpretationLine(barcode: string): EnvelopeField[] {
 export function serialize(fields: EnvelopeField[], form: EnvelopeForm): string {
   switch (form) {
     case 'interpretationLine':
-      return fields.map((f) => `(${f.di})${f.value}`).join('');
+      return joinFields(fields, form);
     case 'rawIso15434':
       return (
         `[)>${RECORD_SEPARATOR}06${GROUP_SEPARATOR}` +
-        fields.map((f) => `${f.di}${f.value}`).join(GROUP_SEPARATOR) +
+        joinFields(fields, form) +
         `${RECORD_SEPARATOR}${END_OF_TRANSMISSION}`
       );
     case 'din16598':
-      return '.' + fields.map((f) => `${f.di}${f.value}`).join('^');
+      return '.' + joinFields(fields, form);
+  }
+}
+
+/**
+ * Joins fields using the given form's per-field textual convention, without any envelope wrapper
+ * (header/trailer or leading '.'). Because each field's value is exactly the substring left after
+ * its DI code was split off, this reproduces the literal source text byte-for-byte -- letting
+ * callers reconstruct an exact original substring for any subset of fields (e.g. the UDI-PI fields
+ * alone) without tracking character offsets separately.
+ */
+export function joinFields(fields: EnvelopeField[], form: EnvelopeForm): string {
+  switch (form) {
+    case 'interpretationLine':
+      return fields.map((f) => `(${f.di})${f.value}`).join('');
+    case 'rawIso15434':
+      return fields.map((f) => `${f.di}${f.value}`).join(GROUP_SEPARATOR);
+    case 'din16598':
+      return fields.map((f) => `${f.di}${f.value}`).join('^');
   }
 }
 

@@ -25,6 +25,7 @@ export interface ExpectedUdiDi {
 }
 
 export interface ExpectedUdiPi {
+  raw: string;
   lot?: string;
   expiryDate?: string;
   manufacturingDate?: string;
@@ -42,7 +43,7 @@ export interface BarcodeFixture {
   expectedValid: boolean;
   reason?: string;
   note?: string;
-  expected?: { udiDi: ExpectedUdiDi; udiPi: ExpectedUdiPi };
+  expected?: { raw: string; udiDi: ExpectedUdiDi; udiPi: ExpectedUdiPi };
 }
 
 export interface BuildFixtureUdiDiInput {

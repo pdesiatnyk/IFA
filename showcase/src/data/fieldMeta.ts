@@ -3,6 +3,7 @@
  * documentation/IFA_UDI_Parser_Analysis.md it's drawn from.
  */
 export const FIELD_META: Record<string, string> = {
+  'result.raw': 'The original barcode string as passed to parseUdi/ParseUdi, unchanged',
   'result.udiDi.raw': 'Full UDI-DI payload string, Data Identifier "9N" (§2)',
   'result.udiDi.scheme': 'Which of the five UDI-DI carriers: PPN, HPC, MASTER_UDI_DI, AIC, or AIM (§2)',
   'result.udiDi.praCode': 'Product Registration Agency Code prefix: 11=PPN, 13=HPC, MA=Master UDI-DI (§2)',
@@ -13,6 +14,7 @@ export const FIELD_META: Record<string, string> = {
   'result.udiDi.packagingLevelIndex': '0-8; manufacturer-defined packaging level, HPC only (9 is reserved/invalid) (§2)',
   'result.udiDi.deviceGroupCode': 'Manufacturer-defined product group designation, Master UDI-DI only (§2)',
   'result.udiDi.nationalCode': 'Opaque national pharmacy-product code (Italy AIC / Portugal AIM). IFA does not publish a length/charset/check-digit spec for this field -- only overall bounds (1-18 chars) are enforced; AIC/AIM only',
+  'result.udiPi.raw': 'Exact source substring covering the UDI-PI fields (everything except "9N"), empty string if there are none',
   'result.udiPi.lot': 'Lot/batch number, Data Identifier "1T" (§3)',
   'result.udiPi.expiryDate': 'Expiry date, Data Identifier "D" (encoded YYMMDD in the barcode) (§3)',
   'result.udiPi.manufacturingDate': 'Manufacturing date, Data Identifier "16D" (encoded YYYYMMDD) (§3)',

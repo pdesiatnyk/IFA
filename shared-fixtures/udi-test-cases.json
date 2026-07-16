@@ -63,6 +63,7 @@
       "inputForm": "interpretationLine",
       "expectedValid": true,
       "expected": {
+        "raw": "(9N)111234567842",
         "udiDi": {
           "raw": "111234567842",
           "scheme": "PPN",
@@ -70,7 +71,7 @@
           "pzn": "12345678",
           "checkDigits": "42"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {
@@ -79,6 +80,7 @@
       "inputForm": "interpretationLine",
       "expectedValid": true,
       "expected": {
+        "raw": "(9N)1312345MED777094",
         "udiDi": {
           "raw": "1312345MED777094",
           "scheme": "HPC",
@@ -88,7 +90,7 @@
           "packagingLevelIndex": 0,
           "checkDigits": "94"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {
@@ -97,6 +99,7 @@
       "inputForm": "interpretationLine",
       "expectedValid": true,
       "expected": {
+        "raw": "(9N)1312345MED777227",
         "udiDi": {
           "raw": "1312345MED777227",
           "scheme": "HPC",
@@ -106,7 +109,7 @@
           "packagingLevelIndex": 2,
           "checkDigits": "27"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {
@@ -115,6 +118,7 @@
       "inputForm": "interpretationLine",
       "expectedValid": true,
       "expected": {
+        "raw": "(9N)MA12345MAX1900",
         "udiDi": {
           "raw": "MA12345MAX1900",
           "scheme": "MASTER_UDI_DI",
@@ -123,7 +127,7 @@
           "deviceGroupCode": "MAX19",
           "checkDigits": "00"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {
@@ -132,6 +136,7 @@
       "inputForm": "interpretationLine",
       "expectedValid": true,
       "expected": {
+        "raw": "(9N)111234567842(1T)1A234B5(D)151231(S)1234567890123456",
         "udiDi": {
           "raw": "111234567842",
           "scheme": "PPN",
@@ -140,6 +145,7 @@
           "checkDigits": "42"
         },
         "udiPi": {
+          "raw": "(1T)1A234B5(D)151231(S)1234567890123456",
           "lot": "1A234B5",
           "expiryDate": "2015-12-31",
           "serialNumber": "1234567890123456"
@@ -153,6 +159,7 @@
       "expectedValid": true,
       "note": "Field order (SN, LOT, EXP) deliberately non-canonical -- parser must key off DI tags, not position",
       "expected": {
+        "raw": "(9N)111234567842(S)JXCC263D0889(1T)170400XYZ(D)230617",
         "udiDi": {
           "raw": "111234567842",
           "scheme": "PPN",
@@ -161,6 +168,7 @@
           "checkDigits": "42"
         },
         "udiPi": {
+          "raw": "(S)JXCC263D0889(1T)170400XYZ(D)230617",
           "serialNumber": "JXCC263D0889",
           "lot": "170400XYZ",
           "expiryDate": "2023-06-17"
@@ -174,6 +182,7 @@
       "note": "Contains literal control chars: 0x1E=RS, 0x1D=GS, 0x04=EOT per ISO/IEC 15434 Format 06",
       "expectedValid": true,
       "expected": {
+        "raw": "[)>\u001e06\u001d9N111234567842\u001d1TABC12345\u001dD241231\u001e\u0004",
         "udiDi": {
           "raw": "111234567842",
           "scheme": "PPN",
@@ -182,6 +191,7 @@
           "checkDigits": "42"
         },
         "udiPi": {
+          "raw": "1TABC12345\u001dD241231",
           "lot": "ABC12345",
           "expiryDate": "2024-12-31"
         }
@@ -193,6 +203,7 @@
       "inputForm": "din16598",
       "expectedValid": true,
       "expected": {
+        "raw": ".9N1312345MED777094^1TABC12345^D241231",
         "udiDi": {
           "raw": "1312345MED777094",
           "scheme": "HPC",
@@ -203,6 +214,7 @@
           "checkDigits": "94"
         },
         "udiPi": {
+          "raw": "1TABC12345^D241231",
           "lot": "ABC12345",
           "expiryDate": "2024-12-31"
         }
@@ -254,6 +266,7 @@
       "expectedValid": true,
       "note": "Illustrative Italian AIC code -- IFA does not document an inner format; only length/charset bounds + outer Mod-97 are validated",
       "expected": {
+        "raw": "(9N)1503222012818",
         "udiDi": {
           "raw": "1503222012818",
           "scheme": "AIC",
@@ -261,7 +274,7 @@
           "nationalCode": "032220128",
           "checkDigits": "18"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {
@@ -271,6 +284,7 @@
       "expectedValid": true,
       "note": "Illustrative Portugal AIM code -- IFA does not document an inner format; only length/charset bounds + outer Mod-97 are validated",
       "expected": {
+        "raw": "(9N)17583412704",
         "udiDi": {
           "raw": "17583412704",
           "scheme": "AIM",
@@ -278,7 +292,7 @@
           "nationalCode": "5834127",
           "checkDigits": "04"
         },
-        "udiPi": {}
+        "udiPi": { "raw": "" }
       }
     },
     {

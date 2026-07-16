@@ -29,6 +29,7 @@ public class UdiParserTests
         ParsedUdi actual = UdiParser.ParseUdi(fixture.Input);
         ExpectedParsedUdi expected = fixture.Expected!;
 
+        Assert.Equal(expected.Raw, actual.Raw);
         Assert.Equal(expected.UdiDi.Raw, actual.UdiDi.Raw);
         Assert.Equal(expected.UdiDi.Scheme, SchemeToString(actual.UdiDi.Scheme));
         Assert.Equal(expected.UdiDi.PraCode, actual.UdiDi.PraCode);
@@ -40,6 +41,7 @@ public class UdiParserTests
         Assert.Equal(expected.UdiDi.NationalCode, actual.UdiDi.NationalCode);
         Assert.Equal(expected.UdiDi.CheckDigits, actual.UdiDi.CheckDigits);
 
+        Assert.Equal(expected.UdiPi.Raw, actual.UdiPi.Raw);
         Assert.Equal(expected.UdiPi.Lot, actual.UdiPi.Lot);
         Assert.Equal(expected.UdiPi.ExpiryDate, actual.UdiPi.ExpiryDate);
         Assert.Equal(expected.UdiPi.ManufacturingDate, actual.UdiPi.ManufacturingDate);

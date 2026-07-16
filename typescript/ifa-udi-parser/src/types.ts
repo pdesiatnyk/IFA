@@ -30,6 +30,8 @@ export interface UdiDi {
 }
 
 export interface UdiPi {
+  /** Exact source substring covering the UDI-PI fields, empty string if there are none. */
+  raw: string;
   lot?: string;
   /** Formatted as YYYY-MM-DD, or YYYY-MM when the source day is "00" (unspecified). */
   expiryDate?: string;
@@ -43,6 +45,8 @@ export interface UdiPi {
 }
 
 export interface ParsedUdi {
+  /** The original barcode string as passed to parseUdi. */
+  raw: string;
   udiDi: UdiDi;
   udiPi: UdiPi;
 }

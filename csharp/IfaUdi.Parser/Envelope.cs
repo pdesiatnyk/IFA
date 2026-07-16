@@ -24,7 +24,7 @@ namespace IfaUdi.Parser
 
         private static readonly Regex InterpretationLineFieldPattern = new Regex(@"\(([0-9A-Za-z]+)\)([^()]*)", RegexOptions.Compiled);
 
-        public static List<(string Di, string Value)> Normalize(string barcode)
+        public static (EnvelopeForm Form, List<(string Di, string Value)> Fields) Normalize(string barcode)
         {
             if (string.IsNullOrEmpty(barcode))
             {
@@ -33,17 +33,17 @@ namespace IfaUdi.Parser
 
             if (barcode.StartsWith("[)>", StringComparison.Ordinal))
             {
-                return ParseRawIso15434(barcode);
+                return (EnvelopeForm.RawIso15434, ParseRawIso15434(barcode));
             }
 
             if (barcode[0] == '.')
             {
-                return ParseDin16598(barcode);
+                return (EnvelopeForm.Din16598, ParseDin16598(barcode));
             }
 
             if (barcode[0] == '(' && InterpretationLineFieldPattern.IsMatch(barcode))
             {
-                return ParseInterpretationLine(barcode);
+                return (EnvelopeForm.InterpretationLine, ParseInterpretationLine(barcode));
             }
 
             throw new IfaUdiFormatException("Barcode does not match any recognized IFA UDI envelope form (raw ISO/IEC 15434, DIN 16598, or Interpretation Line).");
@@ -99,13 +99,35 @@ namespace IfaUdi.Parser
             switch (form)
             {
                 case EnvelopeForm.InterpretationLine:
-                    return string.Concat(fields.Select(f => $"({f.Di}){f.Value}"));
+                    return JoinFields(fields, form);
                 case EnvelopeForm.RawIso15434:
                     return $"[)>{RecordSeparator}06{GroupSeparator}" +
-                        string.Join(GroupSeparator.ToString(), fields.Select(f => f.Di + f.Value)) +
+                        JoinFields(fields, form) +
                         $"{RecordSeparator}{EndOfTransmission}";
                 case EnvelopeForm.Din16598:
-                    return "." + string.Join("^", fields.Select(f => f.Di + f.Value));
+                    return "." + JoinFields(fields, form);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(form));
+            }
+        }
+
+        /// <summary>
+        /// Joins fields using the given form's per-field textual convention, without any envelope
+        /// wrapper (header/trailer or leading '.'). Because each field's Value is exactly the
+        /// substring left after its DI code was split off, this reproduces the literal source text
+        /// byte-for-byte -- letting callers reconstruct an exact original substring for any subset
+        /// of fields (e.g. the UDI-PI fields alone) without tracking character offsets separately.
+        /// </summary>
+        public static string JoinFields(IEnumerable<(string Di, string Value)> fields, EnvelopeForm form)
+        {
+            switch (form)
+            {
+                case EnvelopeForm.InterpretationLine:
+                    return string.Concat(fields.Select(f => $"({f.Di}){f.Value}"));
+                case EnvelopeForm.RawIso15434:
+                    return string.Join(GroupSeparator.ToString(), fields.Select(f => f.Di + f.Value));
+                case EnvelopeForm.Din16598:
+                    return string.Join("^", fields.Select(f => f.Di + f.Value));
                 default:
                     throw new ArgumentOutOfRangeException(nameof(form));
             }

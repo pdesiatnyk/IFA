@@ -17,6 +17,7 @@ public sealed record ExpectedUdiDi(
     string CheckDigits);
 
 public sealed record ExpectedUdiPi(
+    string Raw,
     string? Lot,
     string? ExpiryDate,
     string? ManufacturingDate,
@@ -26,7 +27,7 @@ public sealed record ExpectedUdiPi(
     string? Url,
     List<string>? AdditionalGtins);
 
-public sealed record ExpectedParsedUdi(ExpectedUdiDi UdiDi, ExpectedUdiPi UdiPi);
+public sealed record ExpectedParsedUdi(string Raw, ExpectedUdiDi UdiDi, ExpectedUdiPi UdiPi);
 
 public sealed record BarcodeFixture(
     string Name,

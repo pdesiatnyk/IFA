@@ -8,6 +8,9 @@ companion/summary document, not a replacement for the source specifications in t
 (see `IFA-Info_Spec_UDI_Code_EN (1).md`, `IFA_Spec_PPN_Code_Handelspackung_EN.md`,
 `IFA_UDI_Parser_Analysis.md`).
 
+New to this topic? [`UDI_Explained_Simply.md`](UDI_Explained_Simply.md) covers the same ground
+in plain language with real-world analogies, no prior barcode/UDI knowledge required.
+
 ## 1. UDI-DI in the IFA / MDR-IVDR standard
 
 Under EU MDR (2017/745) / IVDR (2017/746), a **UDI** (Unique Device Identification) consists of:
